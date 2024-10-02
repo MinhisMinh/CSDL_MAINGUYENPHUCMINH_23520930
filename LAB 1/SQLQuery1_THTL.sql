@@ -85,6 +85,8 @@ GO
 --- 6. Làm thế nào để thuộc tính LOAIKH trong quan hệ KHACHHANG có thể lưu các giá trị là: “Vang lai”, “Thuong xuyen”, “Vip”, …
 ALTER TABLE KHACHHANG
 ALTER COLUMN LOAIKH VARCHAR(20)
+ALTER TABLE KHACHHANG
+ADD CONSTRAINT CK_LOAIKH CHECK(LOAIKH in ('Vang lai', 'Thuong xuyen', 'Vip'))
 GO
 
 --- 7. Đơn vị tính của sản phẩm chỉ có thể là (“cay”,”hop”,”cai”,”quyen”,”chuc”)
