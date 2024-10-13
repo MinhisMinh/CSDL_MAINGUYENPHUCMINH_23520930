@@ -152,26 +152,89 @@ GROUP BY ChuyenNganh
 GO
 
 -- Tìm chuyên gia có số năm kinh nghiệm cao nhất.
-SELECT ChuyenNganh, COUNT(ChuyenNganh) AS SoLuong
+SELECT *
 FROM ChuyenGia
-GROUP BY ChuyenNganh
-GO
+WHERE NamKinhNghiem = 
+(
+	SELECT MAX(NamKinhNghiem)
+	FROM ChuyenGia
+)
+GO	
 
 -- Liệt kê tổng số nhân viên cho mỗi công ty mà có số nhân viên lớn hơn 100. Sắp xếp kết quả theo số nhân viên tăng dần.
+SELECT SoNhanVien
+FROM CongTy
+WHERE SoNhanVien > 100
+ORDER BY SoNhanVien ASC
+GO
 
--- Xác định số lượng dự án mà mỗi công ty tham gia có trạng thái 'Đang thực hiện'. Chỉ bao gồm các công ty có hơn một dự án đang thực hiện. Sắp xếp kết quả theo số lượng dự án giảm dần.
+/* Xác định số lượng dự án mà mỗi công ty tham gia có trạng thái 'Đang thực hiện'. 
+Chỉ bao gồm các công ty có hơn một dự án đang thực hiện. Sắp xếp kết quả theo số lượng dự án giảm dần.*/
+SELECT TenCongTy, COUNT(TenDuAn) AS SoLuongDuAn
+FROM DuAn INNER JOIN CongTy ON DuAn.MaCongTy = CongTy.MaCongTy
+WHERE TrangThai = N'Đang thực hiện'
+GROUP BY TenCongTy
+HAVING COUNT(TenDuAn) > 1
+ORDER BY SoLuongDuAn DESC
+GO
 
--- Tìm kiếm các kỹ năng mà chuyên gia có cấp độ từ 4 trở lên và tính tổng số chuyên gia cho mỗi kỹ năng đó. Chỉ bao gồm những kỹ năng có tổng số chuyên gia lớn hơn 2. Sắp xếp kết quả theo tên kỹ năng tăng dần.
+/*Tìm kiếm các kỹ năng mà chuyên gia có cấp độ từ 4 trở lên và tính tổng số chuyên gia cho mỗi kỹ năng đó. 
+Chỉ bao gồm những kỹ năng có tổng số chuyên gia lớn hơn 2. Sắp xếp kết quả theo tên kỹ năng tăng dần.*/
+SELECT TenKyNang, COUNT(MaChuyenGia) AS SoLuongChuyenGia
+FROM KyNang INNER JOIN ChuyenGia_KyNang ON KyNang.MaKyNang = ChuyenGia_KyNang.MaKyNang
+WHERE CapDo >= 4 
+GROUP BY TenKyNang
+HAVING COUNT(MaChuyenGia) > 2
+ORDER BY TenKyNang ASC
+GO
 
 -- Liệt kê tên các công ty có lĩnh vực 'Điện toán đám mây' và tính tổng số nhân viên của họ. Sắp xếp kết quả theo tổng số nhân viên tăng dần.
+SELECT TenCongTy
+FROM CongTy
+WHERE LinhVuc = N'Điện toán đám mây'
+ORDER BY SoNhanVien ASC
+GO
 
 -- Liệt kê tên các công ty có số nhân viên từ 50 đến 150 và tính trung bình số nhân viên của họ. Sắp xếp kết quả theo tên công ty tăng dần.
+SELECT TenCongTy, AVG(SoNhanVien) AS TrungBinh
+FROM CongTy
+WHERE SoNhanVien BETWEEN 50 AND 150
+GROUP BY TenCongTy
+ORDER BY TenCongTy ASC
+GO
 
--- Xác định số lượng kỹ năng cho mỗi chuyên gia có cấp độ tối đa là 5 và chỉ bao gồm những chuyên gia có ít nhất một kỹ năng đạt cấp độ tối đa này. Sắp xếp kết quả theo tên chuyên gia tăng dần.
+/* Xác định số lượng kỹ năng cho mỗi chuyên gia có cấp độ tối đa là 5 và chỉ bao gồm những chuyên gia có ít nhất một kỹ năng đạt cấp độ tối đa này.
+Sắp xếp kết quả theo tên chuyên gia tăng dần.*/
+SELECT HoTen, COUNT(MaKyNang) AS SoLuongKyNang
+FROM ChuyenGia
+INNER JOIN ChuyenGia_KyNang ON ChuyenGia.MaChuyenGia = ChuyenGia_KyNang.MaChuyenGia
+GROUP BY ChuyenGia.HoTen
+HAVING MAX(CapDo) = '5'
+ORDER BY HoTen ASC
+GO
 
--- Liệt kê tên các kỹ năng mà chuyên gia có cấp độ từ 4 trở lên và tính tổng số chuyên gia cho mỗi kỹ năng đó. Chỉ bao gồm những kỹ năng có tổng số chuyên gia lớn hơn 2. Sắp xếp kết quả theo tên kỹ năng tăng dần.
+/* Liệt kê tên các kỹ năng mà chuyên gia có cấp độ từ 4 trở lên và tính tổng số chuyên gia cho mỗi kỹ năng đó. 
+Chỉ bao gồm những kỹ năng có tổng số chuyên gia lớn hơn 2.
+Sắp xếp kết quả theo tên kỹ năng tăng dần.*/
 
--- Tìm kiếm tên của các chuyên gia trong lĩnh vực 'Phát triển phần mềm' và tính trung bình cấp độ kỹ năng của họ. Chỉ bao gồm những chuyên gia có cấp độ trung bình lớn hơn 3. Sắp xếp kết quả theo cấp độ trung bình giảm dần.
+SELECT TenKyNang, COUNT(ChuyenGia_KyNang.MaChuyenGia) AS SoLuongChuyenGia
+FROM KyNang
+INNER JOIN ChuyenGia_KyNang ON KyNang.MaKyNang = ChuyenGia_KyNang.MaKyNang
+WHERE CapDo >= 4
+GROUP BY TenKyNang
+HAVING COUNT(ChuyenGia_KyNang.MaChuyenGia) > 2
+ORDER BY TenKyNang ASC
+GO
 
 
+/*Tìm kiếm tên của các chuyên gia trong lĩnh vực 'Phát triển phần mềm' và tính trung bình cấp độ kỹ năng của họ. 
+Chỉ bao gồm những chuyên gia có cấp độ trung bình lớn hơn 3. Sắp xếp kết quả theo cấp độ trung bình giảm dần.*/
+SELECT HoTen, AVG(ChuyenGia_KyNang.CapDo) AS TB_CapDo
+FROM ChuyenGia
+INNER JOIN ChuyenGia_KyNang ON ChuyenGia.MaChuyenGia = ChuyenGia_KyNang.MaChuyenGia
+WHERE ChuyenNganh = N'Phát triển phần mềm'
+GROUP BY HoTen
+HAVING AVG(ChuyenGia_KyNang.CapDo) > 3
+ORDER BY TB_CapDo DESC
+GO
 
