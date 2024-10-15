@@ -189,7 +189,7 @@ ORDER BY TenKyNang ASC
 GO
 
 -- Liệt kê tên các công ty có lĩnh vực 'Điện toán đám mây' và tính tổng số nhân viên của họ. Sắp xếp kết quả theo tổng số nhân viên tăng dần.
-SELECT TenCongTy
+SELECT TenCongTy, SoNhanVien AS TongSoNhanVien
 FROM CongTy
 WHERE LinhVuc = N'Điện toán đám mây'
 ORDER BY SoNhanVien ASC
